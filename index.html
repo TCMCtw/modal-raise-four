@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>調式練習 · 升四 Raise Four</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#2FBFAA; --gold:#E8A33D; --ink:#EDEDE8; --dim:#9AA3A0;
+  --card:#1E2426; --card2:#232B2D; --line:#33403F;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{font-size:16px}
+body{
+  font-family:'Noto Sans TC',-apple-system,sans-serif;color:var(--ink);
+  background:radial-gradient(120% 90% at 50% 0%, #2A3436 0%, #1B2123 45%, #141819 100%);
+  min-height:100vh;line-height:1.65;
+}
+.wrap{max-width:760px;margin:0 auto;padding:28px 18px 64px}
+header{text-align:center;margin-bottom:26px}
+h1{font-family:'Noto Serif TC',serif;font-size:1.75rem;font-weight:700;letter-spacing:.04em}
+h1 .en{display:block;font-size:.95rem;color:var(--teal);letter-spacing:.14em;font-family:'Noto Sans TC';font-weight:500;margin-top:4px}
+.sub{color:var(--dim);font-size:.86rem;margin-top:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 18px;margin-bottom:18px}
+h2{font-family:'Noto Serif TC',serif;font-size:1.12rem;color:var(--gold);margin-bottom:10px;letter-spacing:.05em}
+h2 .en{font-family:'Noto Sans TC';font-size:.78rem;color:var(--dim);font-weight:500;letter-spacing:.1em;margin-left:8px}
+.explain p{font-size:.92rem;margin-bottom:10px}
+.explain p.en{color:var(--dim);font-size:.84rem}
+.explain b{color:var(--teal);font-weight:700}
+/* key picker */
+.keys{display:grid;grid-template-columns:repeat(9,1fr);gap:6px;margin:6px 0 16px}
+.keys button{
+  font-family:'Noto Sans TC';font-size:.95rem;font-weight:700;color:var(--ink);
+  background:var(--card2);border:1px solid var(--line);border-radius:10px;
+  padding:10px 0;cursor:pointer;transition:all .15s;
+}
+.keys button.on{background:var(--teal);border-color:var(--teal);color:#10201D}
+.keys-label{font-size:.82rem;color:var(--dim);margin-bottom:6px}
+.keys-label b{color:var(--ink)}
+/* player */
+.player{display:flex;align-items:center;gap:14px}
+.playbtn{
+  width:64px;height:64px;min-width:64px;border-radius:50%;border:none;cursor:pointer;
+  background:var(--gold);color:#2A1D08;font-size:1.5rem;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 18px rgba(232,163,61,.35);transition:transform .12s;
+}
+.playbtn:active{transform:scale(.94)}
+.pinfo{flex:1}
+.ptitle{font-size:.92rem;font-weight:700}
+.ptitle .en{color:var(--dim);font-weight:400;font-size:.8rem;margin-left:6px}
+.bar{height:6px;background:#101617;border-radius:3px;margin-top:8px;position:relative;cursor:pointer}
+.bar .fill{position:absolute;left:0;top:0;bottom:0;width:0%;background:var(--teal);border-radius:3px}
+.bar .seg{position:absolute;top:-2px;bottom:-2px;width:1px;background:#33403F}
+.ptime{font-size:.74rem;color:var(--dim);margin-top:5px;display:flex;justify-content:space-between}
+.hint{font-size:.78rem;color:var(--dim);margin-top:12px}
+.hint b{color:var(--gold);font-weight:500}
+/* section cards */
+.mode{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px;transition:border-color .2s, background .2s}
+.mode.playing{border-color:var(--teal);background:#20302E}
+.mode.trans{background:#1C2226}
+.mhead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.mnum{font-family:'Noto Serif TC';color:var(--gold);font-size:.85rem}
+.mname{font-family:'Noto Serif TC';font-size:1.06rem;font-weight:700}
+.malias{font-size:.8rem;color:var(--teal)}
+.mparent{margin-left:auto;font-size:.76rem;color:var(--dim)}
+.mparent b{color:var(--ink);font-weight:500}
+/* solfege grid */
+.sol{display:grid;grid-template-columns:repeat(8,1fr);gap:4px}
+.cell{text-align:center;border-radius:8px;padding:6px 0 5px;background:var(--card2);transition:background .12s}
+.cell .dot{height:10px;font-size:10px;line-height:10px;color:var(--gold)}
+.cell .syl{font-size:.86rem;font-weight:700;line-height:1.3}
+.cell .num{font-size:.72rem;color:var(--dim);line-height:1.3}
+.cell.alt .syl{color:var(--gold)}
+.cell.now{background:var(--teal)}
+.cell.now .syl{color:#10201D}
+.cell.now .num{color:#10201D}
+.cell.now .dot{color:#10201D}
+.mnote{font-size:.74rem;color:var(--dim);margin-top:8px}
+footer{text-align:center;color:var(--dim);font-size:.74rem;margin-top:30px;line-height:1.9}
+footer a{color:var(--teal);text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>調式練習 · 升四<span class="en">MODES PRACTICE · RAISE FOUR</span></h1>
+  <div class="sub">開口唱練習 · 從大調開始,一次升一個音 · From major, one semitone higher at a time</div>
+</header>
+
+<div class="card explain">
+  <h2>這是什麼?<span class="en">WHAT IS THIS</span></h2>
+  <p>從 <b>Ionian(大調)</b>開始,每次把一個音升半音,依序變成 <b>Lydian(利底安)</b>、<b>Locrian(洛克里安)</b>、<b>Phrygian(弗里吉安)</b>、<b>Aeolian(自然小調)</b>、<b>Dorian(多里安)</b>、<b>Mixolydian(米索利底安)</b>。</p>
+  <p>全曲 13 段、52 小節。每個新調式唱兩段:第一段保留原來的唱名,把升高的音唱 <b>fi</b>(金色);第二段用新調式自己的唱名再唱一次。注意:第 13 小節起,起音升高半音(C 版本由 C 移到 C♯),後面維持這個新起音。</p>
+  <p class="en">Start from Ionian (the major scale). Raise one note by a semitone at each step: Lydian, Locrian, Phrygian, Aeolian (natural minor), Dorian, then Mixolydian. There are 13 sections and 52 bars. Each new mode is sung twice: first with the old syllables and the raised note sung as fi (in gold), then with the new mode's own syllables. From bar 13, the starting note rises a semitone (C to C♯ in the C version) and stays there.</p>
+</div>
+
+<div class="card">
+  <h2>練習<span class="en">PRACTICE</span></h2>
+  <div class="keys-label">起始音 <b>Starting note</b>(唱名、簡譜不變,音高跟著換 · solfege stays, pitch moves)</div>
+  <div class="keys" id="keys"></div>
+  <div class="player">
+    <button class="playbtn" id="playBtn" aria-label="play">▶</button>
+    <div class="pinfo">
+      <div class="ptitle"><span id="nowKey">C</span> 開始 · 13 段<span class="en">13 sections</span></div>
+      <div class="bar" id="bar"><div class="fill" id="fill"></div></div>
+      <div class="ptime"><span id="tcur">0:00</span><span id="tdur">1:44</span></div>
+    </div>
+  </div>
+  <div class="hint">跟著音檔<b>開口唱</b>。播放時會標出現在的段落和唱名;點任何一段可以從那裡開始。<br>Sing out loud with the audio. The current section and syllable light up as it plays; tap any section to start from there.</div>
+</div>
+
+<div id="modes"></div>
+
+<div class="card explain">
+  <h2>怎麼練<span class="en">HOW TO PRACTISE</span></h2>
+  <p>先聽一遍,第二遍開始跟著唱。聽到 fi 就知道調式變了;下一段用新調式自己的唱名再唱一次,對比會很明顯。13 段唱完,換一個起始音再來。</p>
+  <p class="en">Listen once, then sing along. When you hear fi, the mode has changed; the next section re-sings the same notes in the new mode's own syllables, and the contrast is obvious. After all 13 sections, pick a new starting note and go again.</p>
+</div>
+
+<footer>
+  調式練習 · 升四 Raise Four - 測試版 Test build<br>
+  台灣合唱音樂中心 TCMC 製作 · © 2026 朱元雷 Ray Chu · <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh-hant">CC BY-NC 4.0</a>
+</footer>
+</div>
+
+<audio id="au" preload="auto"></audio>
+
+<script>
+const KEYS = [
+  {id:'Ab', label:'A♭'}, {id:'A', label:'A'}, {id:'Bb', label:'B♭'},
+  {id:'B', label:'B'}, {id:'C', label:'C'}, {id:'Db', label:'D♭'},
+  {id:'D', label:'D'}, {id:'Eb', label:'E♭'}, {id:'E', label:'E'}
+];
+// pitch-class names, flat-leaning
+const PC = ['C','C♯','D','E♭','E','F','F♯','G','A♭','A','B♭','B'];
+const PCIDX = {'C':0,'Db':1,'D':2,'Eb':3,'E':4,'F':5,'Gb':6,'G':7,'Ab':8,'A':9,'Bb':10,'B':11};
+// syllable -> jianpu number
+const NUM = {do:'1',re:'2',mi:'3',fa:'4',sol:'5',la:'6',ti:'7',fi:'4♯'};
+// modes: parent-major offset in semitones from the start note
+const MODES = {
+  Ionian:{zh:'大調',off:0},
+  Lydian:{zh:'利底安',off:7},
+  Locrian:{zh:'洛克里安',off:2},
+  Phrygian:{zh:'弗里吉安',off:-3},
+  Aeolian:{zh:'自然小調',off:4},
+  Dorian:{zh:'多里安',off:-1},
+  Mixolydian:{zh:'米索利底安',off:6},
+};
+const SECTIONS = [
+  {"type": "mode", "m": "Ionian", "row": ["do", "re", "mi", "fa", "sol", "la", "ti", "do"]},
+  {"type": "trans", "m": "Lydian", "row": ["do", "re", "mi", "fi", "sol", "la", "ti", "do"], "chg": [5, 6]},
+  {"type": "mode", "m": "Lydian", "row": ["fa", "sol", "la", "ti", "do", "re", "mi", "fa"]},
+  {"type": "trans", "m": "Locrian", "row": ["fi", "sol", "la", "ti", "do", "re", "mi", "fi"], "chg": [0, 1], "tonic": true},
+  {"type": "mode", "m": "Locrian", "row": ["ti", "do", "re", "mi", "fa", "sol", "la", "ti"], "tonic": true},
+  {"type": "trans", "m": "Phrygian", "row": ["ti", "do", "re", "mi", "fi", "sol", "la", "ti"], "chg": [7, 8], "tonic": true},
+  {"type": "mode", "m": "Phrygian", "row": ["mi", "fa", "sol", "la", "ti", "do", "re", "mi"], "tonic": true},
+  {"type": "trans", "m": "Aeolian", "row": ["mi", "fi", "sol", "la", "ti", "do", "re", "mi"], "chg": [2, 3], "tonic": true},
+  {"type": "mode", "m": "Aeolian", "row": ["la", "ti", "do", "re", "mi", "fa", "sol", "la"], "tonic": true},
+  {"type": "trans", "m": "Dorian", "row": ["la", "ti", "do", "re", "mi", "fi", "sol", "la"], "chg": [9, 10], "tonic": true},
+  {"type": "mode", "m": "Dorian", "row": ["re", "mi", "fa", "sol", "la", "ti", "do", "re"], "tonic": true},
+  {"type": "trans", "m": "Mixolydian", "row": ["re", "mi", "fi", "sol", "la", "ti", "do", "re"], "chg": [4, 5], "tonic": true},
+  {"type": "mode", "m": "Mixolydian", "row": ["sol", "la", "ti", "do", "re", "mi", "fa", "sol"], "tonic": true},
+];
+const ORDER = ['do','re','mi','fa','sol','la','ti'];
+const POS = s => s==='fi' ? 3 : ORDER.indexOf(s);
+const SEC = 8;             // seconds per section (8 notes, 1s each)
+const TOTAL = 104;         // 13 sections * 8s
+let curKey = 'C';
+
+const au = document.getElementById('au');
+const playBtn = document.getElementById('playBtn');
+const fill = document.getElementById('fill');
+const bar = document.getElementById('bar');
+const tcur = document.getElementById('tcur');
+
+function buildKeys(){
+  const el = document.getElementById('keys');
+  el.innerHTML = '';
+  KEYS.forEach(k=>{
+    const b = document.createElement('button');
+    b.textContent = k.label;
+    if(k.id===curKey) b.classList.add('on');
+    b.onclick = ()=>{ curKey = k.id; loadKey(); buildKeys(); buildModes(); };
+    el.appendChild(b);
+  });
+}
+function loadKey(){
+  au.src = 'audio/raise4-' + curKey + '.m4a';
+  au.load();
+  pause();
+  au.currentTime = 0;
+  document.getElementById('nowKey').textContent = KEYS.find(k=>k.id===curKey).label;
+}
+function pc(off){ return PC[((PCIDX[curKey] + off) % 12 + 12) % 12]; }
+function raised(off){
+  const n=pc(off);
+  return n.includes('♭') ? n.replace('♭','') : n+'♯';
+}
+function sylRow(row){
+  const start = POS(row[0]);
+  return row.map((s,i)=>({syl:s, num:NUM[s], hi:(start+i) >= 7}));
+}
+function buildModes(){
+  const wrap = document.getElementById('modes');
+  wrap.innerHTML = '';
+  SECTIONS.forEach((sec,si)=>{
+    const md = MODES[sec.m];
+    const div = document.createElement('div');
+    div.className = 'mode' + (sec.type==='trans' ? ' trans' : '');
+    div.id = 'mode' + si;
+    const cells = sylRow(sec.row).map((c,ci)=>
+      `<div class="cell${c.syl==='fi'?' alt':''}" id="c${si}-${ci}"><div class="dot">${c.hi?'•':''}</div><div class="syl">${c.syl}</div><div class="num">${c.num}</div></div>`
+    ).join('');
+    let name, sub;
+    if(sec.type === 'mode'){
+      const tonic = pc(sec.tonic ? 1 : 0);
+      name = `<span class="klabel">${tonic}</span> ${sec.m}`;
+      sub = `母調 <b>${pc(md.off)}</b> 大調 · starts on "${sec.row[0]}"`;
+    } else {
+      name = `→ ${sec.m}`;
+      sub = si===3
+        ? `主音升半音 · tonic rises: <b>${pc(0)} → ${pc(1)}</b>`
+        : `升 <b>${pc(sec.chg[0])} → ${raised(sec.chg[0])}</b> · raise a semitone`;
+    }
+    const b1 = si*4+1, b2 = si*4+4;
+    div.innerHTML = `
+      <div class="mhead">
+        <span class="mnum">${si+1}</span>
+        <span class="mname">${name}</span>
+        <span class="malias">${md.zh}</span>
+        <span class="mparent">${sub}</span>
+      </div>
+      <div class="sol">${cells}</div>
+      <div class="mnote">第 ${b1}–${b2} 小節 · bars ${b1}–${b2} · 上行 ascending</div>`;
+    div.onclick = ()=>{ au.currentTime = si*SEC + 0.001; play(); };
+    wrap.appendChild(div);
+  });
+}
+function fmt(t){ t=Math.max(0,Math.floor(t)); return Math.floor(t/60)+':'+String(t%60).padStart(2,'0'); }
+function play(){ au.play().catch(()=>{}); }
+function pause(){ au.pause(); playBtn.textContent='▶'; }
+playBtn.onclick = ()=>{ if(au.paused){ play(); } else { pause(); } };
+au.onplay = ()=>{ playBtn.textContent='❚❚'; };
+au.onpause = ()=>{ playBtn.textContent='▶'; };
+bar.onclick = (e)=>{
+  const r = bar.getBoundingClientRect();
+  au.currentTime = Math.min(TOTAL-0.05, Math.max(0,(e.clientX-r.left)/r.width*TOTAL));
+};
+au.addEventListener('timeupdate', ()=>{
+  let t = au.currentTime;
+  if(t >= TOTAL){ pause(); au.currentTime = 0; t = 0; }
+  fill.style.width = (t/TOTAL*100)+'%';
+  tcur.textContent = fmt(t);
+  const si = Math.min(12, Math.floor(t/SEC));
+  const ni = Math.min(7, Math.floor((t - si*SEC)));
+  SECTIONS.forEach((s,i)=>document.getElementById('mode'+i).classList.toggle('playing', i===si && !au.paused));
+  document.querySelectorAll('.cell.now').forEach(c=>c.classList.remove('now'));
+  if(!au.paused){
+    const c = document.getElementById('c'+si+'-'+ni);
+    if(c) c.classList.add('now');
+  }
+});
+au.addEventListener('ended', ()=>{ pause(); au.currentTime=0; });
+// segment ticks on the bar
+for(let i=1;i<13;i++){
+  const s = document.createElement('div');
+  s.className='seg'; s.style.left=(i/13*100)+'%';
+  bar.appendChild(s);
+}
+buildKeys(); buildModes(); loadKey();
+</script>
+</body>
+</html>
